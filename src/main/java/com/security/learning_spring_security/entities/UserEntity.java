@@ -1,6 +1,7 @@
 package com.security.learning_spring_security.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonProperty;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
@@ -9,7 +10,9 @@ import jakarta.persistence.Id;
 import jakarta.persistence.JoinColumn;
 import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
+import jakarta.persistence.PrePersist;
 import jakarta.persistence.Table;
+import jakarta.persistence.Transient;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -33,9 +36,15 @@ public class UserEntity {
     private String username;
 
     @Column(nullable = false)
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
     private String password;
 
-    private boolean enabled = true;
+    @Column(nullable = false)
+    private boolean enabled;
+
+    @Transient
+    @JsonProperty(access = JsonProperty.Access.READ_WRITE)
+    private boolean admin;
 
     @ManyToMany
     @JoinTable(
@@ -44,4 +53,10 @@ public class UserEntity {
             inverseJoinColumns = @JoinColumn(name = "role_id")
     )
     private Set<RoleEntity> roles;
+
+    @PrePersist
+    public void prePersist(){
+        enabled = true;
+    }
+
 }
