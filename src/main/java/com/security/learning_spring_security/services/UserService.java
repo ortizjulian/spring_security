@@ -8,5 +8,5 @@ public interface UserService {
 
     List<UserEntity> findAll();
     UserEntity save(UserEntity userEntity);
-
+    boolean existsByUsername(String userName);
 }
